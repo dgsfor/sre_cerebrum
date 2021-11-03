@@ -37,6 +37,67 @@ export const asyncRouterMap = [
           }
         ]
       },
+      // report_template
+      {
+        path: '/report_template',
+        redirect: '/report_template/create',
+        component: RouteView,
+        meta: { title: '运营模板', icon: 'snippets' },
+        children: [
+          {
+            path: '/report_template/create',
+            name: 'create',
+            component: () => import('@/views/report_template/create'),
+            meta: { title: '创建模板', keepAlive: true }
+          },
+          {
+            path: '/report_template/list',
+            name: 'list',
+            component: () => import('@/views/report_template/list'),
+            meta: { title: '模板列表', keepAlive: true }
+          },
+          {
+            path: '/report_template/edit',
+            name: 'edit',
+            hidden: true,
+            component: () => import('@/views/report_template/edit'),
+            meta: { title: '编辑模板', keepAlive: true }
+          }
+        ]
+      },
+      // authority_message
+      {
+        path: '/authority_message',
+        redirect: '/authority_message/message_list',
+        component: RouteView,
+        meta: { title: '权威消息', icon: 'message' },
+        children: [
+          {
+            path: '/authority_message/create',
+            name: 'BaseForm',
+            component: () => import('@/views/form/basicForm'),
+            meta: { title: '创建消息', keepAlive: true }
+          },
+          {
+            path: '/authority_message/list',
+            name: 'StepForm',
+            component: () => import('@/views/form/stepForm/StepForm'),
+            meta: { title: '消息列表', keepAlive: true }
+          },
+          {
+            path: '/authority_message/message_source',
+            name: 'AdvanceForm',
+            component: () => import('@/views/form/advancedForm/AdvancedForm'),
+            meta: { title: '消息源定义', keepAlive: true }
+          },
+          {
+            path: '/authority_message/notice_channel',
+            name: 'AdvanceForm',
+            component: () => import('@/views/form/advancedForm/AdvancedForm'),
+            meta: { title: '通知渠道', keepAlive: true }
+          }
+        ]
+      },
       // forms
       {
         path: '/form',

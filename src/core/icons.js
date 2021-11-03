@@ -7,5 +7,6 @@
  * 所有图标均从这里加载，方便管理
  */
 import bxAnaalyse from '@/assets/icons/bx-analyse.svg?inline' // path to your '*.svg?inline' file.
+import message from '@/assets/icons/message.svg?inline' // path to your '*.svg?inline' file.
 
-export { bxAnaalyse }
+export { bxAnaalyse, message }
