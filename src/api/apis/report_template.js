@@ -14,3 +14,11 @@ export function getReportTemplate (params) {
 export function updateReportTemplate (params) {
     return request.put('/api/ssopa/v1/report_template/template', params)
 }
+
+export function deleteReportTemplate (params) {
+    return request.delete(`/api/ssopa/v1/report_template/template/${params}`)
+}
+
+export function updateReportTemplateStatus (templateId, status) {
+    return request.put(`/api/ssopa/v1/report_template/template/${templateId}/${status}`)
+}

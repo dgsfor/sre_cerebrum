@@ -33,10 +33,10 @@
           <a-tag v-show="record.status === 'disable'" color="#f50">禁用</a-tag>
         </span>
         <span slot="action" slot-scope="text, record">
-          <a-button size="small" icon="delete" type="danger">删除</a-button>
+          <a-button size="small" icon="delete" type="danger" @click="handleDelete(record)">删除</a-button>
           <a-divider type="vertical" />
-          <a-button v-show="record.status === 'enable'" size="small" icon="lock">禁用</a-button>
-          <a-button v-show="record.status === 'disable'" size="small" icon="unlock">解禁</a-button>
+          <a-button v-show="record.status === 'enable'" size="small" icon="lock" @click="handleUpdateStatus(record)">禁用</a-button>
+          <a-button v-show="record.status === 'disable'" size="small" icon="unlock" @click="handleUpdateStatus(record)">解禁</a-button>
           <a-divider type="vertical" v-show="record.status === 'enable'" />
           <a-button v-show="record.status === 'enable'" size="small" icon="edit" @click="gotoEditPage(record)">编辑</a-button>
           <a-divider type="vertical" v-show="record.status === 'enable'" />
@@ -49,9 +49,8 @@
 </template>
 
 <script>
-import { getReportTemplateList } from '@/api/apis/report_template'
-import { Button } from 'ant-design-vue'
-
+import { getReportTemplateList, deleteReportTemplate, updateReportTemplateStatus } from '@/api/apis/report_template'
+import { Button, Modal } from 'ant-design-vue'
 export default {
   name: 'ListReportTemplate',
   components: {
@@ -119,6 +118,55 @@ export default {
         }
       })
     },
+    handleDelete (record) {
+      Modal.confirm({
+        title: '你确定要删除这个模板吗？',
+        content: (
+            <ul>
+                <li>ID ：{record.template_id}</li>
+                <li>名称：{record.name}</li>
+            </ul>
+        ),
+        okText: '删除',
+        cancelText: '取消',
+
+        onOk: () => {
+            this.DeleteReportTemplateFunc(record.template_id)
+        },
+
+        onCancel () {
+          console.log('已取消删除')
+        }
+      })
+    },
+    handleUpdateStatus (record) {
+      Modal.confirm({
+        title: '你确定要更新这个模板吗？',
+        content: (
+            <ul>
+                <li>ID ：{record.template_id}</li>
+                <li>名称：{record.name}</li>
+                <li>状态：{record.status}</li>
+            </ul>
+        ),
+        okText: '更新',
+        cancelText: '取消',
+
+        onOk: () => {
+            var status = ''
+            if (record.status === 'enable') {
+                status = 'disable'
+            } else if (record.status === 'disable') {
+                status = 'enable'
+            }
+            this.UpdateReportTemplateStatusFunc(record.template_id, status)
+        },
+
+        onCancel () {
+          console.log('已取消更新')
+        }
+      })
+    },
     /**
      * 获取运营模板列表
      */
@@ -126,6 +174,40 @@ export default {
       try {
         const result = await getReportTemplateList()
         this.reportTemplateListData = result.data.data
+        setTimeout(() => {
+            this.$notification.success({
+              message: '成功',
+              description: result.data.msg
+            })
+        }, 500)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    /**
+     * 删除运营模板
+     */
+    async DeleteReportTemplateFunc (params) {
+      try {
+        const result = await deleteReportTemplate(params)
+        this.GetReportTemplateListFunc()
+        setTimeout(() => {
+            this.$notification.success({
+              message: '成功',
+              description: result.data.msg
+            })
+        }, 500)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    /**
+     * 更新运营模板状态
+     */
+    async UpdateReportTemplateStatusFunc (templateId, status) {
+      try {
+        const result = await updateReportTemplateStatus(templateId, status)
+        this.GetReportTemplateListFunc()
         setTimeout(() => {
             this.$notification.success({
               message: '成功',
