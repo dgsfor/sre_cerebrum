@@ -9,6 +9,12 @@
 
 </div>
 
+项目
+----
+整体项目分为前端和后端：(后续前端和后端会同步更新)
+前端：[sre_cerebrum](https://github.com/gsgs-libin/sre_cerebrum)
+后端：[sre_cerebrum_api](https://github.com/gsgs-libin/sre_cerebrum_api)
+
 Overview
 ----
 
