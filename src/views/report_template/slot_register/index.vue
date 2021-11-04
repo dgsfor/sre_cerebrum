@@ -52,7 +52,7 @@
 import { getReportTemplateList, deleteReportTemplate, updateReportTemplateStatus } from '@/api/apis/report_template'
 import { Button, Modal } from 'ant-design-vue'
 export default {
-  name: 'ListReportTemplate',
+  name: 'ListReportTemplateSlot',
   components: {
     Button
   },
@@ -173,15 +173,13 @@ export default {
     async GetReportTemplateListFunc () {
       try {
         const result = await getReportTemplateList()
-        if (result.status === 200) {
-          this.reportTemplateListData = result.data.data
-          setTimeout(() => {
+        this.reportTemplateListData = result.data.data
+        setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
         }, 500)
-        }
       } catch (err) {
         console.log(err)
       }
@@ -192,15 +190,13 @@ export default {
     async DeleteReportTemplateFunc (params) {
       try {
         const result = await deleteReportTemplate(params)
-        if (result.status === 200) {
-          this.GetReportTemplateListFunc()
-          setTimeout(() => {
+        this.GetReportTemplateListFunc()
+        setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
         }, 500)
-        }
       } catch (err) {
         console.log(err)
       }
@@ -211,15 +207,13 @@ export default {
     async UpdateReportTemplateStatusFunc (templateId, status) {
       try {
         const result = await updateReportTemplateStatus(templateId, status)
-        if (result.status === 200) {
-          this.GetReportTemplateListFunc()
-          setTimeout(() => {
+        this.GetReportTemplateListFunc()
+        setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
         }, 500)
-        }
       } catch (err) {
         console.log(err)
       }

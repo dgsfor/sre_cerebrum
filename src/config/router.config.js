@@ -57,6 +57,19 @@ export const asyncRouterMap = [
             meta: { title: '模板列表', keepAlive: true }
           },
           {
+            path: '/report_template/var_register',
+            name: 'var_register',
+            component: () => import('@/views/report_template/var_register'),
+            meta: { title: '变量注册', keepAlive: true }
+          },
+          {
+            path: '/report_template/slot_register',
+            name: 'slot_register',
+            hidden: true,
+            component: () => import('@/views/report_template/slot_register'),
+            meta: { title: '插槽注册', keepAlive: true }
+          },
+          {
             path: '/report_template/edit',
             name: 'edit',
             hidden: true,
