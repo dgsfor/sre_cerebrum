@@ -90,8 +90,11 @@ const vueConfig = {
           // less vars，customize ant design theme
 
           // 'primary-color': '#F5222D',
-          // 'link-color': '#F5222D',
-          'border-radius-base': '2px'
+          'link-color': '#F5222D',
+          'border-radius-base': '2px',
+          'font-size-base': '6px',
+          'menu-icon-size': '14px',
+          'btn-font-size-sm': '10px'
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
