@@ -45,19 +45,19 @@
         <span slot="action" slot-scope="text, record">
           <a-button size="small" icon="line-chart" @click="handleAuthorityMessageRenderProgress(record)">渲染进度</a-button>
           <a-divider type="vertical" />
-          <a-button v-show="record.send_status === 'NotSent' && (record.audit_status === 'NotApproved' || record.audit_status === 'NoNeedAudit') && record.merge_status === 'MergeD' " size="small" icon="step-forward" type="dashed" @click="handleAuthorityMessageSend(record,'test')">测试发送</a-button>
-          <a-divider v-show="record.send_status === 'NotSent' && (record.audit_status === 'NotApproved' || record.audit_status === 'NoNeedAudit') && record.merge_status === 'MergeD' " type="vertical" />
-          <a-button v-show="(record.audit_status === 'Reviewed' || record.audit_status === 'NoNeedAudit') && record.send_status === 'NotSent' && record.merge_status === 'MergeD'" size="small" icon="fast-forward" type="primary" @click="handleAuthorityMessageSend(record,'release')">正式发送</a-button>
-          <a-divider v-show="(record.audit_status === 'Reviewed' || record.audit_status === 'NoNeedAudit') && record.send_status === 'NotSent' && record.merge_status === 'MergeD'" type="vertical" />
+          <a-button v-show="record.send_status === 'NotSent' && (record.audit_status === 'NotApproved' || record.audit_status === 'NoNeedAudit') && (record.merge_status === 'MergeD' || record.var_list === '')" size="small" icon="step-forward" type="dashed" @click="handleAuthorityMessageSend(record,'test')">测试发送</a-button>
+          <a-divider v-show="record.send_status === 'NotSent' && (record.audit_status === 'NotApproved' || record.audit_status === 'NoNeedAudit') && (record.merge_status === 'MergeD' || record.var_list === '')" type="vertical" />
+          <a-button v-show="(record.audit_status === 'Reviewed' || record.audit_status === 'NoNeedAudit') && record.send_status === 'NotSent' && (record.merge_status === 'MergeD' || record.var_list === '' )" size="small" icon="fast-forward" type="primary" @click="handleAuthorityMessageSend(record,'release')">正式发送</a-button>
+          <a-divider v-show="(record.audit_status === 'Reviewed' || record.audit_status === 'NoNeedAudit') && record.send_status === 'NotSent' && (record.merge_status === 'MergeD' || record.var_list === '')" type="vertical" />
           <a-dropdown-button size="small">
             更多
             <a-menu slot="overlay" @click="handleMenuClick">
               <a-menu-item key="1" @click="handleAuthorityMessageDetail(record)"> <a-icon type="eye" />详情 </a-menu-item>
               <a-menu-item key="2" @click="handleAuthorityMessageSendHistory(record)"> <a-icon type="unordered-list" />发送历史 </a-menu-item>
-              <a-menu-item key="3" v-show="(record.send_status === 'NotSent' && record.audit_status === 'NoNeedAudit') || record.audit_status === 'NotApproved' && record.merge_status === 'MergeD'" @click="gotoEditPage(record)"> <a-icon type="edit" />编辑 </a-menu-item>
-              <a-menu-item key="4" v-show="record.audit_status === 'NotApproved' && record.merge_status === 'MergeD'" @click="handleAuditAuthorityMessage(record)"> <a-icon type="user" />审核 </a-menu-item>
+              <a-menu-item key="3" v-show="(record.send_status === 'NotSent' && record.audit_status === 'NoNeedAudit') || record.audit_status === 'NotApproved' && (record.merge_status === 'MergeD' || record.var_list === '')" @click="gotoEditPage(record)"> <a-icon type="edit" />编辑 </a-menu-item>
+              <a-menu-item key="4" v-show="record.audit_status === 'NotApproved' && (record.merge_status === 'MergeD' || record.var_list === '')" @click="handleAuditAuthorityMessage(record)"> <a-icon type="user" />审核 </a-menu-item>
               <a-menu-item key="5" v-show="record.audit_status !== 'Disuse' && record.send_status !== 'Sent'" @click="AuditAuthorityMessageFunc('Disuse')"> <a-icon type="delete" />废弃 </a-menu-item>
-              <a-menu-item key="6" v-show="record.send_status === 'Sent' && record.merge_status === 'MergeD'" @click="handleAuthorityMessageSend(record,'release')"> <a-icon type="fast-forward" />再次发送 </a-menu-item>
+              <a-menu-item key="6" v-show="record.send_status === 'Sent' && (record.merge_status === 'MergeD' || record.var_list === '')" @click="handleAuthorityMessageSend(record,'release')"> <a-icon type="fast-forward" />再次发送 </a-menu-item>
             </a-menu>
           </a-dropdown-button>
         </span>
@@ -139,7 +139,7 @@
 
 <script>
 import { getRenderProgress, mergeRenderRecordToContent } from '@/api/apis/report_template'
-import { getAuthorityMessageList, authorityMessageSend, getAuthorityMessageSendHistory, auditAuthorityMessage } from '@/api/apis/authority_message'
+import { getAuthorityMessageList, authorityMessageSend, getAuthorityMessageSendHistory, auditAuthorityMessage, getAuthorityMessage } from '@/api/apis/authority_message'
 import { Button, Modal } from 'ant-design-vue'
 export default {
   name: 'AuthorityMessageList',
@@ -270,6 +270,7 @@ export default {
         isMerging: false,
         renderProgressRecordData: [],
         renderProgress: 0,
+        isMergingMessageStatus: '',
         authority_message_send_history_visible: false,
         authorityMessageSendHistory: [],
         authority_message_audit_visible: false,
@@ -298,26 +299,39 @@ export default {
      * 查看渲染进度按钮触发动作
      */
     handleAuthorityMessageRenderProgress (record) {
-      this.modal.render_progress_visible = true
-      this.GetRenderProgressFunc(record.render_id, record.message_id, 'authority_message')
-      if (record.merge_status !== 'MergeD' && this.modal.renderProgress === 100 && this.modal.isMerging === false) {
-        this.modal.isMerging = true
-        this.MergeRenderRecordToContentFunc(record)
-      }
-      window.setInterval(() => {
-        if (this.modal.renderProgress < 100) {
-          this.GetRenderProgressFunc(record.render_id, record.message_id, 'authority_message')
-        }
-        if (record.merge_status !== 'MergeD' && this.modal.renderProgress === 100 && this.modal.isMerging === false) {
+      if (record.var_list !== '') {
+        this.modal.render_progress_visible = true
+        this.GetRenderProgressFunc(record.render_id, record.message_id, 'authority_message')
+        if (record.merge_status !== 'MergeD' && this.modal.renderProgress === 100 && this.modal.isMerging === false && this.modal.isMergingMessageStatus !== 'MergeD') {
           this.modal.isMerging = true
           this.MergeRenderRecordToContentFunc(record)
+        } else {
+          window.setInterval(() => {
+            if (this.modal.renderProgress < 100) {
+              this.GetRenderProgressFunc(record.render_id, record.message_id, 'authority_message')
+            } else if (this.modal.renderProgress === 100 && this.modal.isMergingMessageStatus !== 'MergeD' && this.modal.isMerging === false) {
+                this.GetAuthorityMessageFunc(record.message_id)
+                if (this.modal.isMergingMessageStatus !== 'MergeD' && this.modal.isMergingMessageStatus !== '' && this.modal.renderProgress === 100 && this.modal.isMerging === false) {
+                  this.modal.isMerging = true
+                  this.MergeRenderRecordToContentFunc(record)
+                }
+            }
+          }, 5000)
         }
-      }, 5000)
+      } else {
+        setTimeout(() => {
+              this.$notification.warning({
+                message: '警告',
+                description: '没有需要渲染的变量'
+              })
+          }, 0)
+      }
     },
     handleAuthorityMessageRenderProgressOk () {
       this.modal.render_progress_visible = false
       this.modal.renderProgressRecordData = []
       this.modal.renderProgress = 0
+      this.modal.isMerging = false
     },
     /**
      * 查看发送历史
@@ -504,6 +518,19 @@ export default {
               })
           }, 0)
           this.GetAuthorityMessageListFunc()
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    /**
+     * 获取权威消息列表
+     */
+    async GetAuthorityMessageFunc (messageId) {
+      try {
+        const result = await getAuthorityMessage(messageId)
+        if (result.status === 200) {
+          this.modal.isMergingMessageStatus = result.data.data.merge_status
         }
       } catch (err) {
         console.log(err)
