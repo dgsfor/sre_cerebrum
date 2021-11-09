@@ -193,12 +193,6 @@ export default {
         const result = await getReportTemplateVarList()
         if (result.status === 200) {
         this.reportTemplateVarListData = result.data.data
-          setTimeout(() => {
-            this.$notification.success({
-              message: '成功',
-              description: result.data.msg
-            })
-        }, 500)
         }
       } catch (err) {
         console.log(err)

@@ -35,3 +35,11 @@ export function getReportTemplateVarList () {
 export function deleteReportTemplateVar (templateId, varName) {
     return request.delete(`/api/ssopa/v1/report_template/var/${templateId}/${varName}`)
 }
+
+export function getRenderProgress (renderId, resourceId, resourceType) {
+    return request.get(`/api/ssopa/v1/report_template/var/render/${renderId}/${resourceId}/${resourceType}`)
+}
+
+export function mergeRenderRecordToContent (params) {
+    return request.put('/api/ssopa/v1/report_template/var/merge', params)
+}

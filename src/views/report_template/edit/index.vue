@@ -104,14 +104,16 @@ export default {
       }
       try {
         const result = await updateReportTemplate(updateData)
-        this.reportTemplateListData = result.data.data
-        setTimeout(() => {
+        if (result.status === 200) {
+          this.reportTemplateListData = result.data.data
+          setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
-        }, 500)
-        this.$router.push({ path: '/report_template/list' })
+          }, 500)
+          this.$router.push({ path: '/report_template/list' })
+        }
       } catch (err) {
         console.log(err)
       }

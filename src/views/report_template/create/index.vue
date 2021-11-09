@@ -81,13 +81,15 @@ export default {
       }
       try {
         const result = await createReportTemplate(postData)
-        setTimeout(() => {
+        if (result.status === 200) {
+          setTimeout(() => {
             this.$notification.success({
               message: '创建成功',
               description: result.data.msg
             })
         }, 1000)
         this.$router.push({ path: '/report_template/list' })
+        }
       } catch (err) {
         console.log(err)
       }

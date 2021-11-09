@@ -173,13 +173,15 @@ export default {
     async GetReportTemplateListFunc () {
       try {
         const result = await getReportTemplateList()
-        this.reportTemplateListData = result.data.data
-        setTimeout(() => {
+        if (result.status === 200) {
+          this.reportTemplateListData = result.data.data
+          setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
-        }, 500)
+          }, 500)
+        }
       } catch (err) {
         console.log(err)
       }
@@ -190,13 +192,15 @@ export default {
     async DeleteReportTemplateFunc (params) {
       try {
         const result = await deleteReportTemplate(params)
-        this.GetReportTemplateListFunc()
-        setTimeout(() => {
+        if (result.status === 200) {
+          this.GetReportTemplateListFunc()
+          setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
-        }, 500)
+          }, 500)
+        }
       } catch (err) {
         console.log(err)
       }
@@ -207,13 +211,15 @@ export default {
     async UpdateReportTemplateStatusFunc (templateId, status) {
       try {
         const result = await updateReportTemplateStatus(templateId, status)
-        this.GetReportTemplateListFunc()
-        setTimeout(() => {
+        if (result.status === 200) {
+          this.GetReportTemplateListFunc()
+          setTimeout(() => {
             this.$notification.success({
               message: '成功',
               description: result.data.msg
             })
-        }, 500)
+          }, 500)
+        }
       } catch (err) {
         console.log(err)
       }
