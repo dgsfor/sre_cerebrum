@@ -131,6 +131,11 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/preivew',
+    name: 'report_preview',
+    component: () => import('@/views/report/preview')
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true

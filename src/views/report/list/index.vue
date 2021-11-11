@@ -52,12 +52,12 @@
           <a-divider v-show="record.status === 'Published'" type="vertical" />
           <a-button v-show="record.status === 'NotRendered'" size="small" icon="step-forward" type="dashed" @click="handleRenderReport(record)">渲染</a-button>
           <a-divider v-show="record.status === 'NotRendered'" type="vertical" />
-          <a-button v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" size="small" icon="step-forward" type="dashed">预览</a-button>
+          <a-button v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" size="small" icon="step-forward" type="dashed" @click="gotoReportPreviewPage(record)">预览</a-button>
           <a-divider v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" type="vertical" />
           <a-dropdown-button size="small" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'">
             更多
             <a-menu slot="overlay" @click="handleMenuClick">
-              <a-menu-item key="1" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'"> <a-icon type="edit" />编辑 </a-menu-item>
+              <a-menu-item key="1" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" @click="gotoEditPage(record)"> <a-icon type="edit" />编辑 </a-menu-item>
               <a-menu-item key="2" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'"> <a-icon type="unordered-list" />完结 </a-menu-item>
             </a-menu>
           </a-dropdown-button>
@@ -220,11 +220,16 @@ export default {
   methods: {
     gotoEditPage (record) {
       this.$router.push({
-        name: 'message_edit',
+        name: 'report_edit',
         query: {
-          message_id: record.message_id
+          report_id: record.report_id
         }
       })
+    },
+    gotoReportPreviewPage (record) {
+      // eslint-disable-next-line camelcase
+      const route_data = this.$router.resolve({ name: 'report_preview', query: { report_id: record.report_id, preview_hash: record.preview_hash } })
+      window.open(route_data.href, '_blank')
     },
     /**
      * 查看渲染进度按钮触发动作
