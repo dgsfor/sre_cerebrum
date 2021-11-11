@@ -105,6 +105,28 @@ export const asyncRouterMap = [
             meta: { title: '编辑消息', keepAlive: true }
           }
         ]
+      },
+      // report
+      {
+        path: '/report',
+        redirect: '/report/report_list',
+        component: RouteView,
+        meta: { title: '运营报告', icon: 'profile' },
+        children: [
+          {
+            path: '/report/list',
+            name: 'report_list',
+            component: () => import('@/views/report/list'),
+            meta: { title: '报告列表', keepAlive: true }
+          },
+          {
+            path: '/authority_message/edit',
+            name: 'report_edit',
+            hidden: true,
+            component: () => import('@/views/report/edit'),
+            meta: { title: '编辑报告', keepAlive: true }
+          }
+        ]
       }
     ]
   },

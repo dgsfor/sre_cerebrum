@@ -22,7 +22,7 @@
           :required="true"
         >
           <a-select v-decorator="['type', { initialValue: 'authoritative_temp' }]">
-            <a-select-option value="open_temp" disabled>开放模板</a-select-option>
+            <a-select-option value="open_temp">开放模板</a-select-option>
             <a-select-option value="cron_temp" disabled>周期模板</a-select-option>
             <a-select-option value="authoritative_temp">权威消息模板</a-select-option>
           </a-select>

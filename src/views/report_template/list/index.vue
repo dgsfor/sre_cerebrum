@@ -40,7 +40,7 @@
           <a-divider type="vertical" v-show="record.status === 'enable'" />
           <a-button v-show="record.status === 'enable'" size="small" icon="edit" @click="gotoEditPage(record)">编辑</a-button>
           <a-divider type="vertical" v-show="record.status === 'enable'" />
-          <a-button v-show="record.status === 'enable' && record.type === 'open_temp' || record.type === 'cron_temp'" size="small" icon="export" type="primary">生成报告</a-button>
+          <a-button v-show="record.status === 'enable' && record.type === 'open_temp' || record.type === 'cron_temp'" size="small" icon="export" type="primary" @click="handleCreateReport(record)">生成报告</a-button>
           <a-button v-show="record.type === 'authoritative_temp' && record.status === 'enable'" size="small" icon="message" type="dashed" @click="handleCreateAuthorityMessage(record)">创建消息</a-button>
         </span>
       </a-table>
@@ -53,19 +53,30 @@
       @cancel="handleVCreateAuthorityMessageCancel"
       @create="handleCreateAuthorityMessageCreate"
     />
+
+    <new-report-form
+      ref="NewCreateReportFormRef"
+      :visible="modal.new_report_visible"
+      :clickTemplateId="modal.clickTemplateId"
+      @cancel="handleVCreateReportCancel"
+      @create="handleCreateReportCreate"
+    />
   </page-header-wrapper>
 </template>
 
 <script>
 import { getReportTemplateList, deleteReportTemplate, updateReportTemplateStatus } from '@/api/apis/report_template'
 import { createAuthorityMessage } from '@/api/apis/authority_message'
+import { createReport } from '@/api/apis/report'
 import { Button, Modal } from 'ant-design-vue'
 import NewAuthorityMessageForm from './new/NewAuthorityMessageForm'
+import NewReportForm from './new/NewReportForm'
 export default {
   name: 'ListReportTemplate',
   components: {
     Button,
-    NewAuthorityMessageForm
+    NewAuthorityMessageForm,
+    NewReportForm
   },
   computed: {
         columns () {
@@ -117,6 +128,7 @@ export default {
       reportTemplateListData: [],
       modal: {
         new_authority_message_visible: false,
+        new_report_visible: false,
         clickTemplateId: ''
       }
     }
@@ -207,6 +219,28 @@ export default {
       })
     },
     /**
+     * 创建报告按钮触发动作
+     */
+    handleCreateReport (record) {
+      this.modal.new_report_visible = true
+      this.modal.clickTemplateId = record.template_id
+    },
+    handleVCreateReportCancel () {
+      const form = this.$refs.NewCreateReportFormRef.form
+      form.resetFields()
+      this.modal.new_report_visible = false
+      this.modal.clickTemplateId = ''
+    },
+    handleCreateReportCreate (timeRange) {
+      const form = this.$refs.NewCreateReportFormRef.form
+      form.validateFields((err, values) => {
+        if (err) {
+          return
+        }
+        this.CreateReportFunc(values, timeRange, form)
+      })
+    },
+    /**
      * 获取运营模板列表
      */
     async GetReportTemplateListFunc () {
@@ -282,6 +316,35 @@ export default {
           this.modal.new_authority_message_visible = false
           this.modal.clickTemplateId = ''
           this.$router.push({ path: '/authority_message/list' })
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    /**
+     * 创建报告函数
+     */
+    async CreateReportFunc (params, timeRange, form) {
+      var postData = {
+        'template_id': this.modal.clickTemplateId,
+        'name': params.name,
+        'report_type': params.report_type,
+        'start_time': timeRange[0],
+        'end_time': timeRange[1]
+      }
+      try {
+        const result = await createReport(postData)
+        if (result.status === 200) {
+          setTimeout(() => {
+            this.$notification.success({
+              message: '创建报告成功',
+              description: result.data.msg
+            })
+          }, 500)
+          form.resetFields()
+          this.modal.new_report_visible = false
+          this.modal.clickTemplateId = ''
+          this.$router.push({ path: '/report/list' })
         }
       } catch (err) {
         console.log(err)
