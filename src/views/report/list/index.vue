@@ -5,7 +5,7 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="消息ID">
+              <a-form-item label="报告ID">
                 <a-input v-model="queryParam" placeholder=""/>
               </a-form-item>
             </a-col>
@@ -48,7 +48,7 @@
           <a-divider type="vertical" />
           <a-button size="small" icon="eye" @click="handleReportDetail(record)">报告详情</a-button>
           <a-divider type="vertical" />
-          <a-button v-show="record.status === 'Published'" size="small" icon="step-forward" type="dashed">查看报告</a-button>
+          <a-button v-show="record.status === 'Published'" size="small" icon="step-forward" type="dashed" @click="gotoReportPreviewPage(record)">查看报告</a-button>
           <a-divider v-show="record.status === 'Published'" type="vertical" />
           <a-button v-show="record.status === 'NotRendered'" size="small" icon="step-forward" type="dashed" @click="handleRenderReport(record)">渲染</a-button>
           <a-divider v-show="record.status === 'NotRendered'" type="vertical" />
@@ -58,7 +58,7 @@
             更多
             <a-menu slot="overlay" @click="handleMenuClick">
               <a-menu-item key="1" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" @click="gotoEditPage(record)"> <a-icon type="edit" />编辑 </a-menu-item>
-              <a-menu-item key="2" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'"> <a-icon type="unordered-list" />完结 </a-menu-item>
+              <a-menu-item key="2" v-show="record.status === 'ToBeLabeled' || record.status === 'RenderIng'" @click="handleFinishReport(record)"> <a-icon type="unordered-list" />完结 </a-menu-item>
             </a-menu>
           </a-dropdown-button>
         </span>
@@ -102,7 +102,7 @@
 
 <script>
 import { getRenderProgress, mergeRenderRecordToContent } from '@/api/apis/report_template'
-import { getReportList, renderReport } from '@/api/apis/report'
+import { getReportList, renderReport, finishReport } from '@/api/apis/report'
 import { Button, Modal } from 'ant-design-vue'
 export default {
   name: 'ReportList',
@@ -235,7 +235,7 @@ export default {
      * 查看渲染进度按钮触发动作
      */
     handleReportProgress (record) {
-      if (record.merge_status === 'NotMerge') {
+      if (record.merge_status === 'NotMerge' && record.status !== 'NotRendered') {
         this.modal.merge_button_status = false
         this.modal.report_id = record.report_id
         this.modal.render_id = record.render_id
@@ -335,6 +335,29 @@ export default {
         }
       })
     },
+     /**
+     * 完结按钮
+     */
+    handleFinishReport (record) {
+      Modal.confirm({
+        title: '你确定要完结这个报告吗？',
+        content: (
+            <ul>
+                <li>报告ID ：{record.report_id}</li>
+                <li>名称：{record.name}</li>
+            </ul>
+        ),
+        okText: '确认',
+        cancelText: '取消',
+
+        onOk: () => {
+          this.FinishReportFunc(record.report_id)
+        },
+        onCancel () {
+          console.log('取消')
+        }
+      })
+    },
     /**
      * 获取报告列表函数
      */
@@ -398,6 +421,19 @@ export default {
               description: '请稍后，消息内容正在渲染中····'
             })
             }, 0)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    /**
+     * 完结报告函数
+     */
+    async FinishReportFunc (reportId) {
+      try {
+        const result = await finishReport(reportId)
+        if (result.status === 200) {
+          this.GetReportListFunc()
         }
       } catch (err) {
         console.log(err)

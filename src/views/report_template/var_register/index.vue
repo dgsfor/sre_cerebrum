@@ -130,7 +130,7 @@ export default {
                 <li>类型：{record.var_type}</li>
                 <li>描述：{record.var_desc}</li>
                 <li>创建人：{record.creator}</li>
-                <li>创建时间{record.created_at}</li>
+                <li>创建时间：{record.created_at}</li>
                 <li>更新时间：{record.updated_at}</li>
             </ul>
         ),

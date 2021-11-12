@@ -19,3 +19,9 @@ export function updateReport (params) {
 export function reportPreview (reportId, previewHash) {
     return request.get(`/api/ssopa/v1/report/report_preview/${reportId}/${previewHash}`)
 }
+export function finishReport (reportId) {
+    return request.put(`/api/ssopa/v1/report/report_finish/${reportId}`)
+}
+export function getReportSlotAnnotateList (reportId) {
+    return request.get(`/api/ssopa/v1/report/slot/${reportId}`)
+}

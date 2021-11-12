@@ -43,3 +43,16 @@ export function getRenderProgress (renderId, resourceId, resourceType) {
 export function mergeRenderRecordToContent (params) {
     return request.put('/api/ssopa/v1/report_template/var/merge', params)
 }
+
+// report template slot
+export function createReportTemplateSlot (params) {
+    return request.post('/api/ssopa/v1/report_template/slot', params)
+}
+
+export function getReportTemplateSlotList () {
+    return request.get('/api/ssopa/v1/report_template/slot')
+}
+
+export function deleteReportTemplateSlot (templateId, slotName) {
+    return request.delete(`/api/ssopa/v1/report_template/slot/${templateId}/${slotName}`)
+}

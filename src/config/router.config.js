@@ -65,7 +65,6 @@ export const asyncRouterMap = [
           {
             path: '/report_template/slot_register',
             name: 'slot_register',
-            hidden: true,
             component: () => import('@/views/report_template/slot_register'),
             meta: { title: '插槽注册', keepAlive: true }
           },
@@ -118,6 +117,12 @@ export const asyncRouterMap = [
             name: 'report_list',
             component: () => import('@/views/report/list'),
             meta: { title: '报告列表', keepAlive: true }
+          },
+          {
+            path: '/report/slot',
+            name: 'slot_list',
+            component: () => import('@/views/report/slotlist'),
+            meta: { title: '批注', keepAlive: true }
           },
           {
             path: '/authority_message/edit',
