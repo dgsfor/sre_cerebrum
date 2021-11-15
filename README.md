@@ -74,3 +74,10 @@ yarn run lint
 
 其他说明
 ----
+
+点赞的朋友
+----
+
+[![Stargazers repo roster for @gsgs-libin/sre_cerebrum](https://reporoster.com/stars/gsgs-libin/sre_cerebrum)](https://github.com/gsgs-libin/sre_cerebrum/stargazers)
+
+[![Forkers repo roster for @gsgs-libin/sre_cerebrum](https://reporoster.com/forks/gsgs-libin/sre_cerebrum)](https://github.com/gsgs-libin/sre_cerebrum/network/members)
