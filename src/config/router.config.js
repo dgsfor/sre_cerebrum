@@ -132,6 +132,28 @@ export const asyncRouterMap = [
             meta: { title: '编辑报告', keepAlive: true }
           }
         ]
+      },
+      // instant_chat
+      {
+        path: '/instant_chat',
+        redirect: '/instant_chat/list',
+        component: RouteView,
+        meta: { title: '即时消息', icon: 'aliwangwang' },
+        children: [
+          {
+            path: '/instant_chat/list',
+            name: 'chat_message_list',
+            component: () => import('@/views/instant_chat/chat_message'),
+            meta: { title: '对话列表', keepAlive: true }
+          },
+          {
+            path: '/instant_chat/chat_room',
+            name: 'chat_message_room_detail',
+            hidden: true,
+            component: () => import('@/views/instant_chat/chat_room'),
+            meta: { title: '对话房间', keepAlive: true }
+          }
+        ]
       }
     ]
   },

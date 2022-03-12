@@ -15,3 +15,7 @@ export function logout () {
 export function getUserInfo () {
     return request.get('/api/ssopa/v1/oauth/userinfo')
 }
+
+export function getUserList () {
+    return request.get('/api/ssopa/v1/oauth/user_list')
+}
