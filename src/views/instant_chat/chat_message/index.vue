@@ -57,7 +57,7 @@
 
 <script>
 // 演示如何使用 this.$dialog 封装 modal 组件
-import { AddNewChatMessage } from './new/AddNewChatMessage'
+import AddNewChatMessage from './new/AddNewChatMessage'
 import { getInstantChatMessageList } from '@/api/apis/instant_chat_message'
 import { Modal } from 'ant-design-vue'
 
