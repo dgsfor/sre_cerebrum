@@ -14,7 +14,7 @@
     >
       <a-select v-decorator="['receiver']">
         <a-select-option v-for="(item,i) in userList" :key="i" :value="item.email + '/' + item.user_name">{{ item.user_name }} / {{ item.email }}</a-select-option>
-        </a-select>
+      </a-select>
     </a-form-item>
     <a-form-item
       label="是否直接进入房间"
